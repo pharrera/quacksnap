@@ -61,17 +61,40 @@ public enum PairingMac {
     }
 }
 
+/// LocalSend-style short pairing code — must mirror QuackSnap.Protocol.PairingCode.
+/// The typed digits become the HMAC secret; Bonjour discovery supplies the endpoint.
+public enum ShortPairingCode {
+    public static func normalize(_ code: String) -> String {
+        code.filter { $0.isASCII && $0.isNumber }
+    }
+
+    public static func secret(_ code: String) -> Data {
+        Data(normalize(code).utf8)
+    }
+
+    public static func isPlausible(_ code: String) -> Bool {
+        normalize(code).count == 6
+    }
+}
+
 /// The sender we paired with; persisted by the app and pinned at the TLS layer.
+/// certDer lets the notification extension verify relay envelope signatures;
+/// relayUrl is where that sender parks ciphertext when we're off the LAN.
 public struct PairedSender: Codable, Equatable, Sendable {
     public let deviceId: String
     public let name: String
     public let certFp: String
     public let pairedAt: Date
+    public var certDer: Data?
+    public var relayUrl: String?
 
-    public init(deviceId: String, name: String, certFp: String, pairedAt: Date = Date()) {
+    public init(deviceId: String, name: String, certFp: String, pairedAt: Date = Date(),
+                certDer: Data? = nil, relayUrl: String? = nil) {
         self.deviceId = deviceId
         self.name = name
         self.certFp = certFp
         self.pairedAt = pairedAt
+        self.certDer = certDer
+        self.relayUrl = relayUrl
     }
 }

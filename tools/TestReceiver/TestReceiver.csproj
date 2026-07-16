@@ -5,11 +5,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ScreenDrop.TestReceiver</RootNamespace>
+    <RootNamespace>QuackSnap.TestReceiver</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\windows\ScreenDrop.Protocol\ScreenDrop.Protocol.csproj" />
+    <ProjectReference Include="..\..\windows\QuackSnap.Protocol\QuackSnap.Protocol.csproj" />
   </ItemGroup>
 
 </Project>

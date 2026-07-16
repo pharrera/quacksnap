@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuackSnap — Instant transfer between Windows and iPhone</title>
+  <meta name="description" content="Snip on Windows and it's already on your iPhone — and send photos, files, and text back the other way. End-to-end encrypted, no account, works on your local network." />
+  <meta name="theme-color" content="#FF8A3D" />
+
+  <!-- Open Graph / Twitter. Update the absolute URLs to your deployed domain. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="QuackSnap" />
+  <meta property="og:title" content="QuackSnap — Instant transfer between Windows and iPhone" />
+  <meta property="og:description" content="Snip on Windows and it's already on your iPhone — and send back the other way too. End-to-end encrypted, no account." />
+  <meta property="og:url" content="https://quacksnap.app/" />
+  <meta property="og:image" content="https://quacksnap.app/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QuackSnap — Instant transfer between Windows and iPhone" />
+  <meta name="twitter:description" content="Snip on Windows and it's already on your iPhone — both directions. End-to-end encrypted, no account." />
+  <meta name="twitter:image" content="https://quacksnap.app/assets/og.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "QuackSnap",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Windows, iOS",
+    "description": "Instant, end-to-end-encrypted screenshot and file transfer between Windows and iPhone — both directions.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+</head>
+<body>
+  <!-- Reusable QuackSnap mark: snip corner-brackets around a spark, on the brand tile. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#FFC53D" />
+        <stop offset="1" stop-color="#FF6B3D" />
+      </linearGradient>
+      <symbol id="quack" viewBox="0 0 100 100">
+        <rect x="2" y="2" width="96" height="96" rx="26" fill="url(#brand)" />
+        <g fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M36 24 H24 V36" />
+          <path d="M64 24 H76 V36" />
+          <path d="M36 76 H24 V64" />
+          <path d="M64 76 H76 V64" />
+        </g>
+        <path d="M50 32 L55 45 L68 50 L55 55 L50 68 L45 55 L32 50 L45 45 Z" fill="#fff" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Nav -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="QuackSnap home">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#quack" /></svg>
+      <span>QuackSnap</span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#security">Security</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-cta" href="#download">Get QuackSnap</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <span class="eyebrow">Windows &#8644; iPhone</span>
+        <h1>Your screenshots, on your phone <span class="grad-text">the instant you snip.</span></h1>
+        <p class="lead">Press <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> and it's already on your iPhone — no cables, no uploads, no “send” button. Drag any file in to send that too, and shoot photos and files back the other way.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#download">
+            <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download for free
+          </a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+        <ul class="trust">
+          <li><span class="dot"></span> End-to-end encrypted</li>
+          <li><span class="dot"></span> No account needed</li>
+          <li><span class="dot"></span> Free &amp; open</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual reveal">
+        <!-- Windows snip card -->
+        <div class="win-card float-a">
+          <div class="win-bar"><span></span><span></span><span></span></div>
+          <div class="win-body">
+            <div class="snip-marquee"></div>
+            <p>Win+Shift+S</p>
+          </div>
+        </div>
+
+        <!-- two-way flight arcs -->
+        <svg class="arc" viewBox="0 0 320 240" aria-hidden="true">
+          <defs><linearGradient id="brand2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC53D"/><stop offset="1" stop-color="#FF6B3D"/></linearGradient></defs>
+          <path d="M24 66 C 150 34, 200 150, 296 150" fill="none" stroke="url(#brand2)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+          <path d="M296 196 C 190 214, 150 118, 24 108" fill="none" stroke="url(#brand2)" stroke-width="2.5" stroke-dasharray="2 10" stroke-linecap="round" opacity="0.55"/>
+        </svg>
+
+        <!-- Phone -->
+        <div class="phone float-b">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="app-head">
+              <svg class="mark sm" viewBox="0 0 100 100" aria-hidden="true"><use href="#quack" /></svg>
+              <span class="app-title">QuackSnap</span>
+              <span class="pill"><i></i>Live</span>
+            </div>
+            <div class="grid">
+              <div class="tile img"></div>
+              <div class="tile pdf"><span>PDF</span></div>
+              <div class="tile json"><span>JSON</span></div>
+              <div class="tile img alt"></div>
+              <div class="tile zip"><span>ZIP</span></div>
+              <div class="tile img alt2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What you can send -->
+    <section class="strip reveal">
+      <p class="strip-label">Send anything, either way</p>
+      <ul class="chips-row">
+        <li><i class="ci c-amber"></i> Screenshots</li>
+        <li><i class="ci c-coral"></i> Photos &amp; video</li>
+        <li><i class="ci c-red"></i> PDFs</li>
+        <li><i class="ci c-blue"></i> Documents</li>
+        <li><i class="ci c-amber2"></i> Zips</li>
+        <li><i class="ci c-teal"></i> Highlighted text</li>
+      </ul>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why QuackSnap</span>
+        <h2>Everything you'd want from AirDrop — for Windows and iPhone.</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-ico c-amber"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Instant on your network</h3>
+          <p>On the same Wi-Fi, transfers go straight over an encrypted local connection. Half-a-second fast, nothing leaves your network.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico c-coral"><svg viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Both directions</h3>
+          <p>Snip on your PC, or tap to send photos and files back from your phone. Same speed, same encryption — it just works both ways.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico c-purple"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Any file — even text</h3>
+          <p>PDFs, video, zips, documents, anything. Highlighted text you copy lands on your phone's clipboard, ready to paste.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico c-blue"><svg viewBox="0 0 24 24"><path d="M6 16a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A4.5 4.5 0 0 1 18 16H6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 12v6m0 0 2.5-2.5M12 18l-2.5-2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Arrives even when locked</h3>
+          <p>Off your network? QuackSnap sends an encrypted blob through a relay and a push — the screenshot lands on your lock screen without opening the app.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico c-teal"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Pair with a 6-digit code</h3>
+          <p>Type the code your PC shows — your phone finds it automatically. No sign-in, no QR hunting. QR and links work too.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico c-green"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>End-to-end encrypted</h3>
+          <p>Files are sealed to your device's key. The relay and Apple only ever see ciphertext — nobody in the middle can read what you send.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section band" id="how">
+      <div class="section-head reveal">
+        <span class="eyebrow">Set up once</span>
+        <h2>Three steps, then never think about it again.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-n">1</div>
+          <h3>Pair with a code</h3>
+          <p>Open QuackSnap on Windows, tap Pair on iPhone, type the 6-digit code. Done in five seconds, once.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-n">2</div>
+          <h3>Snip on your PC</h3>
+          <p>Use Win+Shift+S, the Snipping Tool, or Print Screen — or drag any file onto the window.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-n">3</div>
+          <h3>It's on your iPhone</h3>
+          <p>It appears in your gallery and on your clipboard — and you can send photos or files back from your phone anytime.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section class="section security" id="security">
+      <div class="sec-visual reveal">
+        <div class="lock-card">
+          <svg viewBox="0 0 24 24" class="lock"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/></svg>
+          <div class="chips">
+            <span>AES-256-GCM</span>
+            <span>ECDH key wrap</span>
+            <span>Signed &amp; verified</span>
+            <span>Pinned certificate</span>
+          </div>
+        </div>
+      </div>
+      <div class="sec-copy reveal">
+        <span class="eyebrow">Private by design</span>
+        <h2>Only your two devices can read a thing.</h2>
+        <p>Every transfer is encrypted end-to-end between your PC and your phone. Devices trust each other by a certificate pinned when you pair — so even on a hostile network, no one can impersonate your computer or peek at what you send.</p>
+        <p>When a file has to travel through the relay, it's already sealed to your phone's key before it leaves your PC. The relay stores nothing it can open, and forgets it within minutes.</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq" id="faq">
+      <div class="section-head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2>Good to know.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details>
+          <summary>Is it really free?<span class="chev" aria-hidden="true"></span></summary>
+          <p>Yes — the Windows app and the iPhone app are both free. No account, no subscription.</p>
+        </details>
+        <details>
+          <summary>Does it need the internet?<span class="chev" aria-hidden="true"></span></summary>
+          <p>No. On the same Wi-Fi, transfers go directly between your two devices and never leave your network. When your phone is away, an encrypted relay + push delivers it — but the contents stay sealed to your phone.</p>
+        </details>
+        <details>
+          <summary>Can I send from my iPhone to my PC too?<span class="chev" aria-hidden="true"></span></summary>
+          <p>Yes. Tap the send button in the app to push photos or any files back to your computer, over the same encrypted connection. They land in a QuackSnap folder on your PC.</p>
+        </details>
+        <details>
+          <summary>What can I send?<span class="chev" aria-hidden="true"></span></summary>
+          <p>Screenshots, photos, video, PDFs, documents, zips — any file. Copied text can be sent too, and lands on your phone's clipboard ready to paste.</p>
+        </details>
+        <details>
+          <summary>How secure is it?<span class="chev" aria-hidden="true"></span></summary>
+          <p>Every transfer is end-to-end encrypted and authenticated. Your devices pin each other's certificates when you pair, so nothing in the middle — not even the relay or Apple — can read what you send.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Download -->
+    <section class="download" id="download">
+      <div class="download-inner reveal">
+        <h2>Get QuackSnap</h2>
+        <p>Free on both ends. Install the Windows app, grab the iPhone app, pair once.</p>
+        <div class="cta-row center">
+          <a class="btn btn-dark" href="#">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M3 5.5 10.5 4v7.5H3V5.5Zm0 13L10.5 20v-7.3H3v5.8Zm8.7 1.7L21 21.5V12.7h-9.3v7.5Zm0-16.9V11.3H21V2.5l-9.3 1.8Z" fill="currentColor"/></svg>
+            <span><small>Download for</small>Windows</span>
+          </a>
+          <a class="btn btn-dark" href="#">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M16 2c.1 1.2-.4 2.4-1.1 3.2-.8.9-2 1.5-3.1 1.4-.1-1.2.5-2.4 1.2-3.1C13.7 2.6 15 2 16 2Zm3.3 15.6c-.5 1.2-.8 1.7-1.5 2.8-1 1.5-2.4 3.4-4.1 3.4-1.5 0-1.9-1-4-1-2 0-2.5 1-4 1-1.7 0-3-1.7-4-3.2-2.8-4.1-3.1-8.9-1.4-11.5 1.2-1.8 3.1-2.9 4.9-2.9 1.8 0 3 1 4.5 1 1.5 0 2.4-1 4.5-1 1.6 0 3.2.9 4.4 2.3-3.9 2.1-3.3 7.6.2 9.1Z" fill="currentColor"/></svg>
+            <span><small>Download on the</small>App Store</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#quack" /></svg>
+      <span>QuackSnap</span>
+    </div>
+    <p>Two-way transfer between Windows and iPhone.</p>
+    <p class="fine">© <span id="year"></span> QuackSnap · End-to-end encrypted · No account required</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

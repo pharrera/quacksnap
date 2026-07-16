@@ -9,6 +9,10 @@ struct QuackSnapApp: App {
         WindowGroup {
             ContentView()
                 .environment(model)
+                .onOpenURL { url in
+                    // Deep-link pairing: tap a quacksnap://pair?… link to pair.
+                    Task { try? await model.pair(with: url.absoluteString) }
+                }
         }
         .onChange(of: scenePhase) { _, phase in
             switch phase {

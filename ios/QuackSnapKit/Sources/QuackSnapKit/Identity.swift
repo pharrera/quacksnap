@@ -20,34 +20,53 @@ public struct DeviceIdentity: @unchecked Sendable {
     private static let certLabel = "QuackSnap Identity"
     private static let deviceIdKey = "quacksnap.deviceId"
 
-    public static func loadOrCreate(deviceName: String) throws -> DeviceIdentity {
+    /// Pass an app-group id as `accessGroup` so the notification extension can use
+    /// the same identity (iOS allows app groups as keychain access groups).
+    public static func loadOrCreate(deviceName: String, accessGroup: String? = nil) throws -> DeviceIdentity {
+        let defaults = accessGroup.flatMap { UserDefaults(suiteName: $0) } ?? .standard
         let deviceId: String
-        if let existing = UserDefaults.standard.string(forKey: deviceIdKey) {
+        if let existing = defaults.string(forKey: deviceIdKey) {
             deviceId = existing
         } else {
             deviceId = UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
-            UserDefaults.standard.set(deviceId, forKey: deviceIdKey)
+            defaults.set(deviceId, forKey: deviceIdKey)
         }
 
-        if let identity = try? findExisting() {
+        if let identity = try? findExisting(accessGroup: accessGroup) {
             return DeviceIdentity(deviceId: deviceId, deviceName: deviceName,
                                   secIdentity: identity.identity, certificateDER: identity.der)
         }
 
-        let created = try createAndStore(deviceName: deviceName)
+        let created = try createAndStore(deviceName: deviceName, accessGroup: accessGroup)
         return DeviceIdentity(deviceId: deviceId, deviceName: deviceName,
                               secIdentity: created.identity, certificateDER: created.der)
     }
 
+    /// Extension-safe lookup: returns nil instead of creating (extensions must never
+    /// mint a fresh identity — that would silently break the pairing).
+    public static func loadExisting(deviceName: String, accessGroup: String?) -> DeviceIdentity? {
+        guard let found = try? findExisting(accessGroup: accessGroup) else { return nil }
+        let defaults = accessGroup.flatMap { UserDefaults(suiteName: $0) } ?? .standard
+        let deviceId = defaults.string(forKey: deviceIdKey) ?? ""
+        return DeviceIdentity(deviceId: deviceId, deviceName: deviceName,
+                              secIdentity: found.identity, certificateDER: found.der)
+    }
+
     // MARK: - keychain plumbing
 
-    private static func findExisting() throws -> (identity: SecIdentity, der: Data)? {
+    private static func query(_ base: [CFString: Any], accessGroup: String?) -> CFDictionary {
+        var dict = base
+        if let accessGroup { dict[kSecAttrAccessGroup] = accessGroup }
+        return dict as CFDictionary
+    }
+
+    private static func findExisting(accessGroup: String?) throws -> (identity: SecIdentity, der: Data)? {
         var result: CFTypeRef?
-        let status = SecItemCopyMatching([
+        let status = SecItemCopyMatching(query([
             kSecClass: kSecClassIdentity,
             kSecAttrLabel: certLabel,
             kSecReturnRef: true,
-        ] as CFDictionary, &result)
+        ], accessGroup: accessGroup), &result)
         guard status == errSecSuccess, let ref = result else { return nil }
         let identity = ref as! SecIdentity
 
@@ -58,7 +77,7 @@ public struct DeviceIdentity: @unchecked Sendable {
         return (identity, SecCertificateCopyData(cert) as Data)
     }
 
-    private static func createAndStore(deviceName: String) throws -> (identity: SecIdentity, der: Data) {
+    private static func createAndStore(deviceName: String, accessGroup: String?) throws -> (identity: SecIdentity, der: Data) {
         // 1. Key + self-signed certificate (swift-certificates).
         let privateKey = P256.Signing.PrivateKey()
         let certKey = Certificate.PrivateKey(privateKey)
@@ -95,26 +114,26 @@ public struct DeviceIdentity: @unchecked Sendable {
             throw QuackSnapError.transferFailed("Could not parse generated certificate")
         }
 
-        var status = SecItemAdd([
+        var status = SecItemAdd(query([
             kSecClass: kSecClassKey,
             kSecValueRef: secKey,
             kSecAttrLabel: certLabel,
-        ] as CFDictionary, nil)
+        ], accessGroup: accessGroup), nil)
         guard status == errSecSuccess || status == errSecDuplicateItem else {
             throw QuackSnapError.transferFailed("Keychain key import failed (\(status))")
         }
 
-        status = SecItemAdd([
+        status = SecItemAdd(query([
             kSecClass: kSecClassCertificate,
             kSecValueRef: secCert,
             kSecAttrLabel: certLabel,
-        ] as CFDictionary, nil)
+        ], accessGroup: accessGroup), nil)
         guard status == errSecSuccess || status == errSecDuplicateItem else {
             throw QuackSnapError.transferFailed("Keychain certificate import failed (\(status))")
         }
 
         // 3. The keychain pairs them up by public key; fetch the combined identity.
-        guard let found = try findExisting() else {
+        guard let found = try findExisting(accessGroup: accessGroup) else {
             throw QuackSnapError.transferFailed("Keychain did not return the new identity")
         }
         return found

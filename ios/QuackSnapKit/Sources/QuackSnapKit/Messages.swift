@@ -72,14 +72,17 @@ public struct PairRequest: Codable, Sendable {
     public let listenPort: Int
     public let certFp: String
     public var mac: String
+    /// Base64 DER of our certificate so the sender can seal relay envelopes to it.
+    public let certDer: String?
 
-    public init(v: Int = 1, deviceId: String, name: String, listenPort: Int, certFp: String, mac: String = "") {
+    public init(v: Int = 1, deviceId: String, name: String, listenPort: Int, certFp: String, mac: String = "", certDer: String? = nil) {
         self.v = v
         self.deviceId = deviceId
         self.name = name
         self.listenPort = listenPort
         self.certFp = certFp
         self.mac = mac
+        self.certDer = certDer
     }
 }
 
@@ -90,6 +93,8 @@ public struct PairResponse: Codable, Sendable {
     public let certFp: String?
     public let mac: String?
     public let error: String?
+    public let certDer: String?
+    public let relayUrl: String?
 }
 
 public enum WireJSON {

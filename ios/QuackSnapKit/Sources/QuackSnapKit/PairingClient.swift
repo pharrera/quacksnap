@@ -1,8 +1,12 @@
+import Crypto
 import Foundation
 import Network
 
 /// One-shot pairing: plain TCP to the sender's ephemeral pairing listener, mutual
-/// HMAC proof of the QR secret, exchange of certificate fingerprints.
+/// HMAC proof of an out-of-band secret, exchange of certificate fingerprints.
+/// Two entry points, same handshake:
+///  - `pair(payload:...)` — QR / pasted URI (128-bit secret, endpoint in payload)
+///  - `pair(code:...)`    — typed 6-digit code (endpoint found via Bonjour)
 public enum PairingClient {
     public static func pair(
         payload: PairingPayload,
@@ -12,8 +16,15 @@ public enum PairingClient {
         var lastError: Error = QuackSnapError.pairingFailed("No hosts to try")
 
         for host in payload.hosts {
+            guard let port = NWEndpoint.Port(rawValue: UInt16(payload.port)) else { continue }
+            let endpoint = NWEndpoint.hostPort(host: NWEndpoint.Host(host), port: port)
             do {
-                return try await pairWithHost(host, payload: payload, identity: identity, listenPort: listenPort)
+                let sender = try await pair(endpoint: endpoint, secret: payload.secret,
+                                            identity: identity, listenPort: listenPort)
+                guard sender.certFp == payload.certFp else {
+                    throw QuackSnapError.pairingFailed("Sender certificate does not match the QR code")
+                }
+                return sender
             } catch {
                 lastError = error
             }
@@ -21,28 +32,57 @@ public enum PairingClient {
         throw lastError
     }
 
-    private static func pairWithHost(
-        _ host: String,
-        payload: PairingPayload,
+    public static func pair(
+        code: String,
         identity: DeviceIdentity,
         listenPort: Int
     ) async throws -> PairedSender {
-        guard let port = NWEndpoint.Port(rawValue: UInt16(payload.port)) else {
-            throw QuackSnapError.pairingFailed("Bad port \(payload.port)")
+        guard ShortPairingCode.isPlausible(code) else {
+            throw QuackSnapError.pairingFailed("Enter the 6-digit code shown on your computer")
         }
-        let connection = FrameConnection(connection: NWConnection(
-            host: NWEndpoint.Host(host), port: port, using: .tcp))
+        let host = try await PairingDiscovery.discoverFirst()
+        return try await pair(endpoint: host.endpoint, secret: ShortPairingCode.secret(code),
+                              identity: identity, listenPort: listenPort)
+    }
+
+    // MARK: - shared handshake
+
+    private static func pair(
+        endpoint: NWEndpoint,
+        secret: Data,
+        identity: DeviceIdentity,
+        listenPort: Int
+    ) async throws -> PairedSender {
+        let connection = FrameConnection(connection: NWConnection(to: endpoint, using: .tcp))
         defer { connection.cancel() }
 
-        return try await withTimeout(seconds: 6) {
+        // Cancelling the NWConnection fails its pending continuations; hooking that
+        // to task cancellation is what lets the timeout race actually win.
+        return try await withTimeout(seconds: 8) {
+            try await withTaskCancellationHandler {
+                try await handshake(connection, secret: secret, identity: identity, listenPort: listenPort)
+            } onCancel: {
+                connection.cancel()
+            }
+        }
+    }
+
+    private static func handshake(
+        _ connection: FrameConnection,
+        secret: Data,
+        identity: DeviceIdentity,
+        listenPort: Int
+    ) async throws -> PairedSender {
+        do {
             try await connection.start()
 
             var request = PairRequest(
                 deviceId: identity.deviceId,
                 name: identity.deviceName,
                 listenPort: listenPort,
-                certFp: identity.fingerprint)
-            request.mac = PairingMac.forRequest(secret: payload.secret, request)
+                certFp: identity.fingerprint,
+                certDer: identity.certificateDER.base64EncodedString())
+            request.mac = PairingMac.forRequest(secret: secret, request)
             try await connection.send(.hello, message: request)
 
             let (_, responsePayload) = try await connection.receive()
@@ -53,14 +93,19 @@ public enum PairingClient {
                 throw QuackSnapError.pairingFailed(response.error ?? "Sender rejected the pairing")
             }
 
-            let expected = PairingMac.forResponse(secret: payload.secret, deviceId: deviceId, name: name, certFp: certFp)
+            let expected = PairingMac.forResponse(secret: secret, deviceId: deviceId, name: name, certFp: certFp)
             guard expected == mac else {
                 throw QuackSnapError.pairingFailed("Sender failed verification — wrong code or tampering")
             }
-            guard certFp == payload.certFp else {
-                throw QuackSnapError.pairingFailed("Sender certificate does not match the QR code")
+
+            // Keep the sender's full cert only if it hashes to the MAC-covered fingerprint.
+            var certDer: Data?
+            if let der = response.certDer.flatMap({ Data(base64Encoded: $0) }),
+               Base64Url.encode(Data(SHA256.hash(data: der))) == certFp {
+                certDer = der
             }
-            return PairedSender(deviceId: deviceId, name: name, certFp: certFp)
+            return PairedSender(deviceId: deviceId, name: name, certFp: certFp,
+                                certDer: certDer, relayUrl: response.relayUrl)
         }
     }
 }

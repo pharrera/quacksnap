@@ -4,19 +4,19 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
-using ScreenDrop.Protocol;
+using QuackSnap.Protocol;
 
 // Development stand-in for the iPhone app: pairs with the Windows sender and
 // receives files over the same mutually-authenticated TLS protocol.
 //
-//   dotnet run -- pair "screendrop://pair?..."   one-time pairing
+//   dotnet run -- pair "quacksnap://pair?..."   one-time pairing
 //   dotnet run -- listen                          receive into ./received
 //
 // State (identity + pinned peer) lives in ./receiver-data. Plaintext on disk —
 // this is a dev tool, not a product.
 
 const int DefaultListenPort = 47820;
-const string PfxPassword = "screendrop-dev";
+const string PfxPassword = "quacksnap-dev";
 
 string dataDir = Path.Combine(Environment.CurrentDirectory, "receiver-data");
 Directory.CreateDirectory(dataDir);
@@ -37,7 +37,7 @@ switch (args.FirstOrDefault() ?? "listen")
         await ListenAsync();
         break;
     default:
-        Console.WriteLine("Usage: TestReceiver pair \"<screendrop://pair?...>\" | TestReceiver listen");
+        Console.WriteLine("Usage: TestReceiver pair \"<quacksnap://pair?...>\" | TestReceiver listen");
         return 1;
 }
 return 0;
@@ -88,7 +88,7 @@ async Task ListenAsync()
 {
     if (state.Peer == null)
     {
-        Console.WriteLine("Not paired yet. Run: dotnet run -- pair \"<screendrop://...>\"");
+        Console.WriteLine("Not paired yet. Run: dotnet run -- pair \"<quacksnap://...>\"");
         return;
     }
 
