@@ -3,3 +3,6 @@ obj/
 receiver-data/
 received/
 artifacts/
+.claude/
+.config/
+ios/QuackSnapKit/.build/
